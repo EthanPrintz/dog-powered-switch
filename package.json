@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "johnny-five": "^2.0.0",
+    "lifx-http-api": "^1.0.3",
+    "particle-io": "^0.15.0"
+  }
+}
