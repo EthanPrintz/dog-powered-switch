@@ -3,6 +3,7 @@ const DOTENV = require('dotenv');
 const LIFX = require('lifx-http-api');
 const FIVE = require('johnny-five');
 const PARTICLE = require('particle-io');
+const fs = require('fs');
 
 // =================================================
 // Initializations
@@ -22,6 +23,23 @@ const board = new FIVE.Board({
 const lifx = new LIFX({
   bearerToken: process.env.LIFX_TOKEN,
 });
+
+// Get morse code library
+const morseTranslation = JSON.parse(fs.readFileSync('morse-code.json'));
+
+// Set message
+const message =
+  'Bug is a doggo The love of my fucking life  He likes cheese munch munch';
+
+// Convert message to 2D array of morse code
+const morseMessage = message
+  .toLowerCase()
+  .split('')
+  .map((character) =>
+    character !== ' ' ? morseTranslation[character].split('') : ' '
+  );
+
+console.log(morseMessage);
 
 // =================================================
 // Server logic
