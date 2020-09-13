@@ -39,7 +39,18 @@ const morseMessage = message
     character !== ' ' ? morseTranslation[character].split('') : ' '
   );
 
-console.log(morseMessage);
+// Based off of  morse code syntax
+const letterDelay = 1;
+const wordDelay = 3;
+const messageDelay = 7;
+const delayUnit = 1000;
+
+const dotDuration = 200;
+const dashDuration = 600;
+
+function timeout(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 // =================================================
 // Server logic
@@ -48,15 +59,63 @@ board.on('ready', () => {
   const pressureSwitch = new FIVE.Button('D0');
   // When pressure switch is down (circuit complete)
   pressureSwitch.on('press', () => {
-    // Set color to blue
-    lifx.setState('group:Den', { color: 'blue' });
     console.log('down');
-  });
-  // When pressure switch is up (circuit broken)
-  pressureSwitch.on('release', () => {
-    // Set color to red
-    lifx.setState('group:Den', { color: 'red' });
-    console.log('up');
+    // Set color to blue
+    lifx.setState('group:Den', { color: 'green' });
+    morseMessage.forEach(async (token) => {
+      // if (token === ' ') {
+      // Turn light off after word
+      lifx
+        .setState('group:Den', {
+          color: 'red',
+        })
+        .then(timeout(3000))
+        .then(
+          lifx.setState('group:Den', {
+            color: 'green',
+          })
+        );
+      // }
+      // else {
+      //     // Read word
+      //     token.forEach(async (character) => {
+      //       if (character === '.') {
+      //         // On for DOT
+      //         lifx
+      //           .setState('group:DEN', {
+      //             brightness: 1, // To-do: change to 1/buttons on
+      //           })
+      //           .then(timeout(dotDuration))
+      //           .then(
+      //             lifx.setState('group:Den', {
+      //               brightness: 0,
+      //             })
+      //           );
+      //       } else {
+      //         // On for DASH
+      //         lifx
+      //           .setState('group:DEN', {
+      //             brightness: 1, // To-do: change to 1/buttons on
+      //           })
+      //           .then(timeout(dashDuration))
+      //           .then(
+      //             lifx.setState('group:Den', {
+      //               brightness: 0,
+      //             })
+      //           );
+      //       }
+      //     });
+      //     // Delay to space next character
+      //     await timeout(letterDelay * delayUnit);
+      //   }
+      // });
+    });
+    // When pressure switch is up (circuit broken)
+    pressureSwitch.on('release', () => {
+      // Set color to red
+      lifx.setState('group:Den', { color: 'blue' });
+      console.log('up');
+    });
   });
 });
 
